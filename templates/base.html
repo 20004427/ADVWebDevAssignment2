@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/universalStyling.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {% block headContent %}
+    {%- endblock %}
+</head>
+<body>
+    {% block extraJavascript %}
+    {%- endblock %}
+    <section class="heading">
+        {% block heading %}
+        {%- endblock %}
+    </section>
+    <section id="navigation">
+        <a href="{{ url_for('index') }}">
+            <button type="button" class="nav">
+                Home
+            </button>
+        </a>
+        <a href="{{ url_for('flights') }}">
+            <button type="button" class="nav">
+                Flights
+            </button>
+        </a>
+        {% if loggedin %}
+            <a href="{{ url_for('profile') }}">
+                <button type="button" class="nav">
+                    Profile
+                </button>
+            </a>
+            <a href="{{ url_for('checkout') }}">
+                <button type="button" class="nav">
+                    Checkout
+                </button>
+            </a>
+            <form id="logoutForm" action="{{ url_for('logout')}}" method="post">
+                <button type="submit" class="nav">
+                    Logout
+                </button>
+            </form>
+        {% else %}
+            <a href="{{ url_for('login') }}">
+                <button type="button" class="nav">
+                    Login
+                </button>
+            </a>
+            <a href="{{ url_for('register') }}">
+                <button type="button" class="nav">
+                    Register
+                </button>
+            </a>
+        {% endif %}
+    </section>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <section id="flashMessages">
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="flashMessage flash{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+    {% endwith %}
+
+{% block bodyContent %}
+{%- endblock %}
+</body>
+</html>

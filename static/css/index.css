@@ -1,0 +1,8 @@
+#Memes {
+    text-align: center;
+    margin: 10px;
+}
+#Memes > img {
+    width: 40%;
+    height: auto;
+}

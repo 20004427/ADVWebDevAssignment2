@@ -1,0 +1,86 @@
+{%- extends "base.html" %}
+
+{% block headContent %}
+    <link rel="stylesheet" href="static/css/profile.css" type="text/css" />
+    <title>Gabe Newell Airlines | Profile</title>
+{% endblock %}
+
+{% block extraJavascript %}
+    <script type="text/javascript" src="static/Javascript/profile.js"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRJupEkbEQLeofq7Njrv9al8SA-NrDdSA&callback=initMap"> </script>
+{%- endblock %}
+
+{% block heading %}
+    <h1>Gabe Newell Airlines</h1>
+{%- endblock %}
+
+{% block bodyContent %}
+    <section id="cancelBookingOverlay">
+        <section id="cancelBookingOverlayBody">
+            <h2>Cancel booking</h2>
+            <form id="cancelBookingForm" onsubmit="submitCancelBooking(); return false;">
+                <section class="inputRow">
+                    <label for="seats">No seats: </label>
+                    <input type="number" min="1" name="seats" id="seats" oninput="this.reportValidity();"/>
+                </section>
+                <section class="buttonRow">
+                    <button id="cancelBookingFormSubmit" type="submit">Cancel</button>
+                    <button id="closeButton" onclick="closeCancelOverlay(); return false;">Close</button>
+                </section>
+            </form>
+            <section id="cancelBookingOverlayWarnings">
+                <p class="warningText" id="cancelBookingOverlayWarningText"></p>
+            </section>
+        </section>
+    </section>
+    <h2>Welcome to you profile {{ user_info["username"] }}</h2>
+
+    <section id="userFlights">
+        <h3>Your flights/ bookings</h3>
+        {% if not flights %}
+            <h4>You haven't booked any flights yet.</h4>
+            <p>Visit <a href="{{ url_for('flights') }}">here</a> to make a booking.</p>
+        {% else %}
+            <table id="bookedFlights">
+                <tr>
+                    <th>Departure Date</th>
+                    <th>Departure Time</th>
+                    <th>Departure Location</th>
+                    <th>Seats Booked</th>
+                    <th>Cost per seat</th>
+                    <th>Total cost</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                {% for flight in flights %}
+                    <tr>
+                        <td>{{ flight[2] }}</td>
+                        <td>{{ flight[3] }}</td>
+                        <td><p class="flightDepartureLocCode">{{ flight[1] }}</p>: <p class="flightDepartureLoc"></p></td>
+                        <td>{{ flight[12] }} </td>
+                        <td>${{ flight[8] }}</td>
+                        <!-- Wasn't sure what would be more correct,
+                             Passing another variable, or just doing the calculation here.
+                             This seemed cleaner to me -->
+                        <td>${{ flight[8] * flight[12] }}</td>
+                        <td><button class="tableButton"
+                                    onclick="window.location.href='{{ url_for('booking', flight_id = flight[0]) }}'">View</button></td>
+                        <td>
+                            {% if (flight[2] | str_to_date < date_now) or (flight[2] | str_to_date == date_now and
+                                flight[3] | str_to_time < time_now) %}
+                                <strong class="warningText">Departed</strong>
+                            {% else %}
+                                <button class="tableButton" onclick="openCancelOverlay({{ flight[0] }}, {{ flight[12] }})">Cancel</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr id="bookedFlightsSummaryRow">
+                    <td colspan="5"></td>
+                    <td>${{ total_cost }}</td>
+                    <td colspan="2"></td>
+                </tr>
+            </table>
+        {% endif %}
+    </section>
+{%- endblock %}

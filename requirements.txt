@@ -1,0 +1,8 @@
+# Cryptography is required for docker but not running the app outside of docker.
+Cryptography
+Flask~=2.1.2
+flask-login
+flask-mysql
+flask-session
+# Mysql is a 'virtual package'
+mysql-connector-python

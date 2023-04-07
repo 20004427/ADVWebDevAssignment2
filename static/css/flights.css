@@ -1,0 +1,58 @@
+th > button {
+    margin-right: 5px;
+}
+th > img {
+    height: 16px;
+}
+
+#flightsTableContainer {
+    margin-left: 1vw;
+    margin-right: 1vw;
+}
+
+#searchBar {
+    margin-bottom: 1vh;
+    text-align: right;
+}
+
+#searchForm {
+    width: 100%;
+    display: flex;
+}
+
+#searchForm > * {
+    flex: 1;
+    margin-left: 1vw;
+    margin-right: 1vw;
+}
+
+#flightsTable {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.booked {
+    background-color: orange;
+}
+
+.available {
+    background-color: green;
+}
+
+.cancelled {
+    background-color: red;
+}
+
+.departed {
+    color: red;
+    text-decoration: bold;
+}
+
+#flightsTable tr {
+    border-bottom: 1px solid black;
+}
+
+p.warningText {
+    margin-left: 1vw;
+}

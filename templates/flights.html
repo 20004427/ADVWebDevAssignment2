@@ -1,0 +1,90 @@
+{%- extends "base.html" %}
+
+{% block headContent %}
+    <link rel="stylesheet" href="static/css/flights.css" type="text/css" />
+    <title>Gabe Newell Airlines | flights</title>
+{%- endblock %}
+
+{% block extraJavascript %}
+    <script type="text/javascript" src="static/Javascript/flights.js"></script>
+{%- endblock %}
+
+{% block heading %}
+    <h1>Gabe Newell Airlines</h1>
+{%- endblock %}
+
+{% block bodyContent %}
+    <h2>Flights</h2>
+    <p class="warningText"><strong>All times here are in NZ (Auckland) time</strong></p>
+    <section id="flightsTableContainer">
+        <section id="searchBar">
+            <form id="searchForm" onsubmit="searchButtonClick(); return false;">
+                <section class="searchInputElement">
+                    <input type="text" id="searchQuery" placeholder="Search..."/>
+                </section>
+                <section class="searchInputElement">
+                    <label for="interconnectingFlightsCheckbox">Interconnecting:</label>
+                    <input type="checkbox" id="interconnectingFlightsCheckbox"/>
+                </section>
+                <section class="searchInputElement">
+                    <label for="startDate">Start date:</label>
+                    <input type="date" id="startDate" name="startDate"/>
+                </section>
+                <section class="searchInputElement">
+                    <label for="endDate">End date:</label>
+                    <input type="date" id="endDate" name="endDate"/>
+                </section>
+                <button id="searchFormSubmit" type="submit">
+                    Search
+                </button>
+            </form>
+        </section>
+        <table id="flightsTable">
+            <tr>
+                <th>Departure</th>
+                <th><button onclick="sort(this, 'flight_expected_departure_date');" id="departureTimeColumnButton">Departure Time &nbsp;
+                </button>
+                </th>
+                <th>Destination</th>
+                <th>Plane Type</th>
+                <th>Available Seats</th>
+                <th><button onclick="sort(this, 'flight_cost');" id="costColumnButton">Cost</button></th>
+                <th></th>
+            </tr>
+            {% for flight in flights %}
+                {% if ((flight[2] | str_to_date) < date_now) %}
+                    <tr class="departed">
+                {% elif (flight[3] | str_to_time < time_now) and (flight[2] | str_to_date == date_now) %}
+                    <tr class="departed">
+                {% elif flight[13] == 0 %}
+                    <tr class="booked">
+                {% else %}
+                    <tr class="available">
+                {% endif %}
+                <td>{{ flight[1] }}</td>
+                <td>{{ flight[2] }}@{{ flight[3] }}</td>
+                <td>{{ flight[4] }}</td>
+                <td>{{ flight[11] }}</td>
+                {% if flight[13] > 0 %}
+                    <td>{{ flight[13] }}</td>
+                {% else %}
+                    <td><strong>Fully booked</strong></td>
+                {% endif %}
+                <td>${{ flight[8] }}</td>
+                <td><button onclick="window.location.href='{{ url_for('booking', flight_id = flight[0]) }}'"
+                            class = "tableButton">
+                        {% if ((flight[2] | str_to_date) < date_now) %}
+                            <b>Departed</b>
+                        {% elif (flight[3] | str_to_time < time_now) and (flight[2] | str_to_date == date_now) %}
+                            <b>Departed</b>
+                        {% elif flight[13] > 0 %}
+                            Book
+                        {% else %}
+                            View
+                        {% endif %}
+                    </button></td>
+                </tr>
+            {%- endfor %}
+        </table>
+    </section>
+{% endblock %}

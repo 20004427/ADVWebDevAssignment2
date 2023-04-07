@@ -1,0 +1,57 @@
+h3 {
+    text-align: center;
+}
+
+#map {
+    width: 100%;
+    height: 50vh;
+}
+
+#route {
+    display: inline-block;
+    width: 50%;
+}
+
+#flightDetailsTable {
+    display: inline-block;
+    width: 40%;
+    margin-left: 20px;
+    float: right;
+}
+
+.flightDetailsRow > * {
+    margin: 0;
+}
+
+.flightDetailsRow > td:first-child {
+    font-weight: bold;
+}
+
+#currentDepartureTimeZone, #currentArrivalTimeZone {
+    display: inline;
+}
+
+.interconnecting {
+    color: orange;
+    text-align: center;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+}
+
+.flightInputRow > td > section {
+    text-align: center;
+}
+
+.flightInputCell {
+    text-align: center;
+}
+
+.flightInputCell Button {
+    width: 4vw;
+    min-width: 120px;
+}
+
+.warningText {
+    color: red;
+    text-align: center;
+}

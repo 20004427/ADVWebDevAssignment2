@@ -1,0 +1,36 @@
+{%- extends "base.html" %}
+
+{% block headContent %}
+    <link rel="stylesheet" href="static/css/login.css" type="text/css" />
+    <title>Gabe Newell Airlines | Login</title>
+{%- endblock %}
+
+<!-- NOTE: flask will not load javascript in head if it is added to a base file,
+    Therefore it has to be in the body. Normally I would put all javascript references in the head,
+    but flask doesn't like it.-->
+{% block extraJavascript %}
+    <script type="text/javascript" src="static/Javascript/login.js"></script>
+{%- endblock %}
+
+{% block heading %}
+    <h1>Gabe Newell Airlines</h1>
+{%- endblock %}
+
+{% block bodyContent %}
+    <h2>Login</h2>
+    <form id="loginForm" onsubmit="loginButtonClick(); return false;">
+        <section class="inputElement">
+            <label>Username</label>
+            <input type="text" id="username" placeholder="Username">
+        </section>
+        <section class="inputElement">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Password">
+        </section>
+        <section class="inputElement">
+            <button type="submit" id="loginButton">
+                Login
+            </button>
+        </section>
+    </form>
+{%- endblock %}

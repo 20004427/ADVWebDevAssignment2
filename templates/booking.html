@@ -1,0 +1,162 @@
+{%- extends "base.html" %}
+
+{% block headContent %}
+    <link rel="stylesheet" href="static/css/booking.css" type="text/css" />
+    <title>Gabe Newell Airlines | Booking</title>
+{%- endblock %}
+
+{% block extraJavascript %}
+    <script type="text/javascript" src="static/Javascript/booking.js"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRJupEkbEQLeofq7Njrv9al8SA-NrDdSA&callback=initMap"> </script>
+{%- endblock %}
+
+{% block heading %}
+    <h1>Gabe Newell Airlines</h1>
+{%- endblock %}
+
+{% block bodyContent %}
+    <h2>Booking</h2>
+    <h3>Make a booking for flight {{ details[10] }}</h3>
+    <h3>From {{ details[1] }} to {{ details[4] }}</h3>
+
+    <section id="route">
+        <h3>Route</h3>
+        <div id="map"></div>
+        <input type="hidden" id="mapDeparturePoint" value="{{ details[1] }}">
+        <input type="hidden" id="mapArrivalPoint" value="{{ details[4] }}">
+    </section>
+
+    <table id="flightDetailsTable">
+        <tr>
+            <th style="width: 40%"></th>
+            <th style="width: 60%"></th>
+        </tr>
+        <tr>
+            <td colspan="2"><h3>Details</h3></td>
+        </tr>
+        <tr class="flightDetailsRow">
+            <td>Flight Departure Location: </td>
+            <td id="departureLocation"></td>
+        </tr>
+        {% if details[1][:2] != "NZ" or details[1] == "NZCI" %}
+            <tr>
+                <td colspan="2">
+                    <label for="departureToLocalTimeCheckbox">Departure to Local time</label>
+                    <input type="checkbox" id="departureToLocalTimeCheckbox" onchange="changeTimeZoneDeparture(this)"
+                    disabled/>
+                </td>
+            </tr>
+        {% endif %}
+        <tr class="flightDetailsRow">
+            <td>Flight Departure Date: </td>
+            <td id="departureDate">{{ details[2] }}</td>
+            <input type="hidden" id="originalDepartureDate" value="{{ details[2] }}" />
+        </tr>
+        <tr class="flightDetailsRow">
+            <td>Flight Departure Time <p id="currentDepartureTimeZone">(NZ Time)</p>: </td>
+            <td id="departureTime">{{ details[3] }}</td>
+            <input type="hidden" id="originalDepartureTime" value="{{ details[3] }}" />
+        </tr>
+        <tr class="flightDetailsRow">
+            <td>Flight Arrival Location: </td>
+            <td id="arrivalLocation"></td>
+        </tr>
+        {% if details[4][:2] != "NZ" or details[4] == "NZCI" %}
+            <tr>
+                <td colspan="2">
+                    <label for="arrivalToLocalTimeCheckbox">Arrival to Local time</label>
+                    <input type="checkbox" id="arrivalToLocalTimeCheckbox" onchange="changeTimeZoneArrival(this)"
+                    disabled/>
+                </td>
+            </tr>
+        {% endif %}
+        <tr class="flightDetailsRow">
+            <td>Expected Arrival Date: </td>
+            <td id="arrivalDate">{{ details[5] }}</td>
+            <input type="hidden" id="originalArrivalDate" value="{{ details[2] }}" />
+        </tr>
+        <tr class="flightDetailsRow">
+            <td>Expected Arrival Time<p id="currentArrivalTimeZone">(NZ time)</p>: </td>
+            <td id="arrivalTime">{{ details[6] }}</td>
+            <input type="hidden" id="originalArrivalTime" value="{{ details[3] }}" />
+        </tr>
+        <tr class="flightDetailsRow">
+            <td>Cost: </td>
+            <td>${{ details[8] }}</td>
+        </tr>
+        <tr class="flightDetailsRow">
+            <td>Plane Code: </td>
+            <td>{{ details[10] }}</td>
+        </tr>
+        <tr class="flightDetailsRow">
+            <td>Plane Model: </td>
+            <td>{{ details[11] }}</td>
+        </tr>
+        <tr class="flightDetailsRow">
+            <td>Seats Available: </td>
+            <td>{{ details[13] }} / {{ details[12] }}</td>
+        </tr>
+        <tr class="flightDetailsRow">
+            {% if details[7] == 1 %}
+                <td class="interconnecting" colspan="2">
+                    NOTE: This is an interconnecting flight,
+                    <!-- Weird. For some reason, the departure date is already in datetime? -->
+                    {% if interconnecting_flight[2] | str_to_date < date_now or
+                    (interconnecting_flight[2] | str_to_date == date_now and
+                    interconnecting_flight[3] | str_to_time < time_now) %}
+                        <b class="warningText"><br/>The interconnecting flight has already departed</b><br/>
+                        visit <a href="{{ url_for('booking', flight_id = interconnecting_flight[0]) }}">here</a><br />
+                        to vew the flight from {{ interconnecting_flight[1] }} to {{ interconnecting_flight[4] }}
+                    {% else %}
+                        visit <a href="{{ url_for('booking', flight_id = interconnecting_flight[0]) }}">here</a><br />
+                        to book the interconnecting flight from {{ interconnecting_flight[1] }} to {{ interconnecting_flight[4] }}
+                    {% endif %}
+                </td>
+            {% endif %}
+        </tr>
+        <!-- Weird. For some reason, the departure date is already in datetime? -->
+        {% if (details[2] < date_now) or
+            ((details[2] == date_now) and
+            (details[3] | str_to_time < time_now)) %}
+            <tr>
+                <td colspan="2">
+                    <p class="warningText">
+                        <strong>This flight has already departed</strong>
+                    </p>
+                </td>
+            </tr>
+        {% elif details[13] > 0 %}
+            <tr class="flightInputRow">
+                <td colspan="2">
+                    <section>
+                        <label for="seats">No seats: </label>
+                        <input type="number" max="{{ details[13] }}" min="0" name="seats" id="seats"
+                        oninput="this.reportValidity();"/>
+                    </section>
+                </td>
+            </tr>
+            <tr class="flightInputRow">
+                <td colspan="2" class="flightInputCell"><button type="button" id="bookButton" onclick="bookButtonClicked({{ details[0] }}, {{ details[13] }})">
+                        Book
+                    </button>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">
+                    <p class="warningText">
+                        <strong>Sorry, this flight is fully booked.</strong>
+                    </p>
+                </td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td colspan="2">
+                <p id="bookingWarningText" class="warningText"></p>
+            </td>
+        </tr>
+    </table>
+    <br/>
+    <br/>
+
+{% endblock %}

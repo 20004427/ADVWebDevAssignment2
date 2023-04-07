@@ -1,0 +1,97 @@
+/* _______________________ Vanilla elements _______________________ */
+html {
+    height: 100%;
+}
+
+html, html * {
+    cursor: url("../cursors/paper-plane/normal select.cur"), auto;
+}
+
+a * {
+    cursor: url("../cursors/paper-plane/link select.ani"), auto;
+}
+
+h1 {
+    font-size: 2.4em;
+}
+
+h2 {
+    font-size: 2em;
+}
+
+h3 {
+    font-size: 1.6em;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+
+/* _______________________ Navigation _______________________ */
+
+#navigation {
+    width: 100%;
+    background-color: lightblue;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    flex-wrap: wrap;
+}
+
+.nav {
+    height: 2em;
+    min-height: 30px;
+    margin: 2px;
+    flex-basis: 80px;
+}
+
+.nav > a {
+    text-decoration: none;
+    color: black;
+}
+
+/* _______________________ FLASH MESSAGES _______________________ */
+
+#flashMessages {
+    width: 100%;
+    background-color: black;
+    display: flex;
+}
+
+.flashes {
+    list-style-type: none;
+}
+
+.flashMessage {
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.flashError {
+    color: red;
+}
+
+.flashSuccess {
+    color: green;
+}
+
+/* _______________________ Text Decoration _______________________ */
+
+.highlight {
+    text-decoration: underline;
+}
+
+.highlight > a {
+    color: red;
+}
+
+.warningText {
+    color: red;
+    font-weight: bold;
+}
+
+/* _______________________ Table _______________________ */
+.tableButton {
+    width: 100%;
+}
