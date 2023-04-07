@@ -1,4 +1,18 @@
-To run the app:
+## Database
+
+Run the databaseSetup.sql in /db
+Then run either the dump.sql or generateFlights.py to fill the database.
+
+## Running the app outside docker
+
+Comment out the `# app.config['MYSQL_DATABASE_HOST'] = 'db'` line in main.py
+Run the main.py file
+
+## If using docker
+
+Uncomment the `# app.config['MYSQL_DATABASE_HOST'] = 'db'` line in main.py
+
+To run the app in docker:
 
 It "should" work by simply cd'ing to the root.
 Then running:       docker-compose build
